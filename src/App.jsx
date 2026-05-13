@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const COOLDOWN_DURATION = 10 * 1000;
+const COOLDOWN_DURATION = 3600 * 1000;
 
 const API_URL = 'https://presomale-reaction-baclend.onrender.com';
 
