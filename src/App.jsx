@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 
 const COOLDOWN_DURATION = 10 * 1000;
 
-// ✅ URL del backend in produzione — cambia solo qui se cambia il dominio
 const API_URL = 'https://presomale-reaction-baclend.onrender.com';
 
 export default function App() {
@@ -13,7 +12,6 @@ export default function App() {
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
 
   useEffect(() => {
-    // ✅ FIX 1: era 'https://...onrender.com' senza /api/leaderboard
     fetch(`${API_URL}/api/leaderboard`)
       .then(res => {
         if (!res.ok) throw new Error(`Errore Server: ${res.status}`);
@@ -56,20 +54,22 @@ export default function App() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    console.log("🔍 Pulsante cliccato!"); // LOG 1
     if (!query.trim()) return;
+    
     setIsLoading(true);
-    setResults([]);
+    console.log("📡 Provo a chiamare:", `${API_URL}/api/search?q=${query}`); // LOG 2
 
     try {
-      // ✅ FIX 2: era ancora su http://localhost:3000
       const response = await fetch(`${API_URL}/api/search?q=${encodeURIComponent(query)}`);
-      if (!response.ok) throw new Error('Errore server');
+      console.log("Status risposta:", response.status); // LOG 3
       const data = await response.json();
       setResults(data);
     } catch (error) {
-      console.error(error);
+      console.error("🔥 ERRORE CATTURATO:", error); // LOG 4
     } finally {
       setIsLoading(false);
+      console.log("🏁 Fine operazione"); // LOG 5
     }
   };
 
@@ -77,7 +77,6 @@ export default function App() {
     if (cooldownRemaining > 0) return;
 
     try {
-      // ✅ FIX 3: era 'https://...onrender.com' senza /api/vote
       const response = await fetch(`${API_URL}/api/vote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
